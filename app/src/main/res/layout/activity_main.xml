@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    tools:context="com.virutsa.code.weatherapp.WeatherActivity"
+    >
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edt_query_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/SIZE_16"
+        android:layout_marginEnd="@dimen/SIZE_16"
+        android:hint="@string/enter_city"
+        android:maxLines="1"
+        android:minHeight="@dimen/SIZE_48"
+        android:padding="@dimen/SIZE_8"
+        android:textColor="@color/black"
+        android:textSize="@dimen/TEXT_SIZE_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/SIZE_10"
+        android:layout_height="wrap_content"
+        android:text="@string/search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edt_query_city" />
+
+    <TextView
+        android:id="@+id/temprature_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/opensans_medium"
+
+        android:textSize="@dimen/TEXT_SIZE_24"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_search" />
+
+    <ImageView
+        android:layout_width="@dimen/SIZE_150"
+        android:layout_height="@dimen/SIZE_150"
+        android:id="@+id/weather_display_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/temprature_details"
+        android:contentDescription="" />
+    <TextView
+        android:id="@+id/city_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/SIZE_16"
+        android:textColor="@color/black"
+        android:fontFamily="@font/opensans_medium"
+
+        android:textSize="@dimen/TEXT_SIZE_24"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather_display_icon" />
+
+    <TextView
+        android:id="@+id/country_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/SIZE_5"
+        android:textColor="@color/greyHintColor"
+        android:textSize="@dimen/TEXT_SIZE_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/city_name" />
+
+
+    <TextView
+        android:id="@+id/weather_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="@dimen/SIZE_5"
+        android:fontFamily="@font/opensans_medium"
+        android:textColor="@color/teal_200"
+        android:textSize="@dimen/TEXT_SIZE_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/country_name" />
+    <TextView
+        android:id="@+id/weather_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="@dimen/SIZE_5"
+        android:text=""
+        android:fontFamily="@font/opensans_regular"
+        android:textColor="@color/greyHintColor"
+        android:textSize="@dimen/TEXT_SIZE_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather_title" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

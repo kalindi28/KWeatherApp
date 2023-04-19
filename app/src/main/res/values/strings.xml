@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">KWeatherApp</string>
+    <string name="search">Search</string>
+    <string name="enter_city">Enter City</string>
+    <string name="internet_connection_lost">Please check internet connection</string>
+    <string name="enter_city_msg">Please enter city</string>
+</resources>

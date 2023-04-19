@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="SIZE_150">150dp</dimen>
+    <dimen name="TEXT_SIZE_16">16sp</dimen>
+    <dimen name="TEXT_SIZE_14">14sp</dimen>
+    <dimen name="TEXT_SIZE_12">12sp</dimen>
+    <dimen name="TEXT_SIZE_24">24sp</dimen>
+    <dimen name="SIZE_5">5dp</dimen>
+    <dimen name="SIZE_8">8dp</dimen>
+    <dimen name="SIZE_16">16dp</dimen>
+    <dimen name="SIZE_10">10dp</dimen>
+    <dimen name="SIZE_48">48dp</dimen>
+</resources>
