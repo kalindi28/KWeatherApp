@@ -7,10 +7,11 @@ import com.virutsa.code.weatherapp.model.WeatherResponse
 import com.weatherapidemo.model.City
 import com.weatherapidemo.network.ApiService
 import com.weatherapidemo.network.RetrofitInstance
+import javax.inject.Inject
 
-class WeatherRepository {
 
-    val retrofitInstance = RetrofitInstance.getRetrofitInstance().create(ApiService::class.java)
+class WeatherRepository @Inject constructor(private val apiService: ApiService){
+
 
     private val cityData=MutableLiveData<ArrayList<City>>()
     private val weatherData=MutableLiveData<WeatherResponse>()
@@ -23,7 +24,7 @@ class WeatherRepository {
 
 
     suspend fun getCityLatLong(q:String){
-        val result=retrofitInstance.getCityLatLong(q,10,APP_ID)
+        val result=apiService.getCityLatLong(q,10,APP_ID)
         if(result?.body()!=null){
             cityData.postValue(result.body())
 
@@ -31,7 +32,7 @@ class WeatherRepository {
     }
 
     suspend fun getWeatherData(lat:Double,lon:Double){
-        val result=retrofitInstance.getWeatherData(lat,lon,APP_ID)
+        val result=apiService.getWeatherData(lat,lon,APP_ID)
         if(result?.body()!=null){
             weatherData.postValue(result.body())
         }

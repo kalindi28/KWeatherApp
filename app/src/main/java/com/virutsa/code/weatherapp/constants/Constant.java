@@ -10,4 +10,5 @@ public class Constant {
             Manifest.permission.ACCESS_FINE_LOCATION
 
     };
+    public static final String NOTIFICATION_KEY = "text_test";
 }

@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.virutsa.code.weatherapp.model.WeatherResponse
 import com.virutsa.code.weatherapp.repository.WeatherRepository
 import com.weatherapidemo.model.City
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
+@HiltViewModel
+class WeatherViewModel @Inject constructor(private val weatherRepository: WeatherRepository) : ViewModel() {
     //get latlong of city from search query
     fun getCityLatLongBySearch(query: String) {
         viewModelScope.launch(Dispatchers.IO) {

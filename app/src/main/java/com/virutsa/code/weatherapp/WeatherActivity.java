@@ -1,33 +1,31 @@
 package com.virutsa.code.weatherapp;
 
-import static com.virutsa.code.weatherapp.constants.Constant.MULTIPLE_PERMISSIONS;
-import static com.virutsa.code.weatherapp.constants.Constant.permissions;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.virutsa.code.weatherapp.constants.Constant;
 import com.virutsa.code.weatherapp.databinding.ActivityMainBinding;
-import com.virutsa.code.weatherapp.factory.WeatherViewModelFactory;
+import com.virutsa.code.weatherapp.helper.permissions.Permission;
+import com.virutsa.code.weatherapp.helper.permissions.PermissionHandler;
 import com.virutsa.code.weatherapp.model.Weather;
-import com.virutsa.code.weatherapp.repository.WeatherRepository;
 import com.virutsa.code.weatherapp.util.NetworkUtils;
 import com.virutsa.code.weatherapp.util.Utils;
 import com.virutsa.code.weatherapp.viewmodel.WeatherViewModel;
 import com.weatherapidemo.model.City;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class WeatherActivity extends AppCompatActivity {
 
     private ActivityMainBinding mainBinding;
@@ -40,10 +38,10 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
-        mViewModel = new ViewModelProvider(this, new WeatherViewModelFactory(new WeatherRepository())).get(WeatherViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         checkPermissions();
 
-        checkDataExists();
+
         observeCityChanges();
         observeWeatherDataChanges();
 
@@ -55,7 +53,15 @@ public class WeatherActivity extends AppCompatActivity {
             latitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLat();
             longitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLon();
             setCityDataToView(WeatherSession.getInstance().getCityData(WeatherActivity.this));
+
+        } else {
+            if (NetworkUtils.isConnected(WeatherActivity.this)) {
+                mViewModel.getWeatherData(latitude, longitude);
+            } else {
+                Toast.makeText(WeatherActivity.this, getString(R.string.internet_connection_lost), Toast.LENGTH_SHORT).show();
+            }
         }
+
 
     }
 
@@ -73,47 +79,42 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        int result;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p : permissions) {
-            result = ContextCompat.checkSelfPermission(WeatherActivity.this, p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
+        PermissionHandler permissionHandler = new PermissionHandler(WeatherActivity.this);
+        if(!permissionHandler.isPermissionGranted(Permission.LOCATION)) {
+            permissionHandler.askForPermission(Permission.LOCATION,this);
+        }else {
+
+            checkDataExists();
         }
-        if (!listPermissionsNeeded.isEmpty())
-            ActivityCompat.requestPermissions(WeatherActivity.this,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), Constant.MULTIPLE_PERMISSIONS);
-    }
+
+       }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @ NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (WeatherSession.getInstance().getCityData(WeatherActivity.this) != null) {
-                        latitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLat();
-                        longitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLon();
-                        setCityDataToView(WeatherSession.getInstance().getCityData(WeatherActivity.this));
 
-                    } else {
-                        if (NetworkUtils.isConnected(WeatherActivity.this)) {
-                            mViewModel.getWeatherData(latitude, longitude);
-                        } else {
-                            Toast.makeText(WeatherActivity.this, getString(R.string.internet_connection_lost), Toast.LENGTH_SHORT).show();
-                        }
-                    }
+    // boolean isGranted=   permissionHandler.checkCrucialPermissionsGranted(this, requestCode, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (WeatherSession.getInstance().getCityData(WeatherActivity.this) != null) {
+                latitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLat();
+                longitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLon();
+                setCityDataToView(WeatherSession.getInstance().getCityData(WeatherActivity.this));
+
+            } else {
+                if (NetworkUtils.isConnected(WeatherActivity.this)) {
+                    mViewModel.getWeatherData(latitude, longitude);
                 } else {
-                    if (WeatherSession.getInstance().getCityData(WeatherActivity.this) != null) {
-                        latitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLat();
-                        longitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLon();
-                        setCityDataToView(WeatherSession.getInstance().getCityData(WeatherActivity.this));
-
-                    }
-
+                    Toast.makeText(WeatherActivity.this, getString(R.string.internet_connection_lost), Toast.LENGTH_SHORT).show();
                 }
             }
+        } else {
+            if (WeatherSession.getInstance().getCityData(WeatherActivity.this) != null) {
+                latitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLat();
+                longitude = WeatherSession.getInstance().getCityData(WeatherActivity.this).getLon();
+                setCityDataToView(WeatherSession.getInstance().getCityData(WeatherActivity.this));
+
+            }
+
         }
     }
 
@@ -139,7 +140,7 @@ public class WeatherActivity extends AppCompatActivity {
             mainBinding.weatherTitle.setText(weather.getMain());
             double temp = weatherResponse.getTemprature().getTemp();
             temp = temp - 273.15;
-            mainBinding.tempratureDetails.setText("Temprature:" + Utils.dblValue("" + temp) + " \u2103");
+            mainBinding.tempratureDetails.setText(String.format("%s%s ℃", getString(R.string.temprature), Utils.dblValue("" + temp)));
             Glide.with(WeatherActivity.this)
                     .load(Constant.BASE_URL_WEATHER_ICON + weather.getIcon() + ".png")
                     .into(mainBinding.weatherDisplayIcon);
